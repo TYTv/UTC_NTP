@@ -50,16 +50,13 @@ public abstract class NTP {
             return recvTime - sentTime;
         }
 
-        public double destinationTimestamp() {
-            //獲得的時間是格林威治時間，變更為GMT+8 (+2208988800)
-            return (recvTime / 1000.0) + 2208988800.0;
-        }
-
         public double offsetTime() {
             if (pkg == null) {
                 return 0;
             }
-            return ((pkg.receiveTimestamp - pkg.originateTimestamp) + (pkg.transmitTimestamp - destinationTimestamp())) / 2;
+            //獲得的時間是格林威治時間，變更為GMT+8 (+2208988800)
+            double destinationTimestamp = (recvTime / 1000.0) + 2208988800.0;
+            return ((pkg.receiveTimestamp - pkg.originateTimestamp) + (pkg.transmitTimestamp - destinationTimestamp)) / 2;
         }
 
     }
