@@ -1,5 +1,7 @@
 package felix.com.utc_ntp;
 
+import android.app.Activity;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.ConnectException;
@@ -122,15 +124,19 @@ public abstract class NTP {
     };
 
 
-    public NTP() {
+    public NTP(final Activity act) {
+
+        final List<RESULT> results = new ArrayList<>();
 
         new Thread() {
             @Override
             public void run() {
                 super.run();
 
-                List<RESULT> results = new ArrayList<>();
+
                 for (String host : server) {
+
+                    //處理一個項目，失敗重試
                     RESULT r = null;
                     for (int i = 0; i <= retry; i++) {
                         r = taskNTP(host);
@@ -138,10 +144,32 @@ public abstract class NTP {
                             break;
                         }
                     }
-                    onResult(r);
+
+                    //一個項目完成，並在 UI thread 執行結果處理
+                    final RESULT finalR = r;
+                    act.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            onResult(finalR);
+
+                        }
+                    });
+
+                    //收集所有項目
                     results.add(r);
+
                 }
-                onResultFinish(results);
+
+                //所有項目完成，並在 UI thread 執行結果處理
+                act.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        onResultFinish(results);
+
+                    }
+                });
 
             }
         }.start();

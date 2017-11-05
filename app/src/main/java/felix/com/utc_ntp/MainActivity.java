@@ -27,46 +27,30 @@ public class MainActivity extends AppCompatActivity {
     public void onClickStart(View view) {
 
         bt.setEnabled(false);
-        final StringBuilder sb = new StringBuilder();
+        new NTP(this) {
 
-        new NTP() {
+            StringBuilder sb = new StringBuilder();
 
             @Override
             public void onResult(final RESULT result) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        sb.append(result.offsetTime() + "s\t" + result.responseTime() + "ms\t" + result.host + "\n");
-                        tv.setText(sb);
-
-                    }
-                });
+                sb.append(result.offsetTime() + "s\t" + result.responseTime() + "ms\t" + result.host + "\n");
+                tv.setText(sb);
 
             }
 
             @Override
             public void onResultFinish(final List<RESULT> results) {
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        Map<String, Double> msd = averageNTP(results);
-                        sb.append(msd.get(KEY_OFF) + "s\t" + msd.get(KEY_RSP) + "ms\t" + " <- Average(" + msd.get(KEY_TOL) + ")\n");
-                        tv.setText(sb);
-                        bt.setEnabled(true);
-
-                    }
-                });
+                Map<String, Double> msd = averageNTP(results);
+                sb.append(msd.get(KEY_OFF) + "s\t" + msd.get(KEY_RSP) + "ms\t" + " <- Average(" + msd.get(KEY_TOL) + ")\n");
+                tv.setText(sb);
+                bt.setEnabled(true);
 
             }
 
         };
 
-
     }
-
 
 }
