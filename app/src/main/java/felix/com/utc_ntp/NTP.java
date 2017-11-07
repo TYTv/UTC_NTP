@@ -43,7 +43,7 @@ public abstract class NTP {
             this.recvTime = recvTime;
         }
 
-        public long responseTime() {
+        public double responseTime() {
             if (recvTime <= sentTime) {
                 return 0;
             }

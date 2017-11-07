@@ -43,7 +43,14 @@ public class MainActivity extends AppCompatActivity {
             public void onResultFinish(final List<RESULT> results) {
 
                 Map<String, Double> msd = averageNTP(results);
+                int adj = (int) (msd.get(KEY_OFF) * 1000);
+                if (adj != 0) {
+                    time.setUTC_delta_ms(adj);
+                }
+
                 sb.append(msd.get(KEY_OFF) + "s\t" + msd.get(KEY_RSP) + "ms\t" + " <- Average(" + msd.get(KEY_TOL) + ")\n");
+//                sb.append(results.get(results.size()-1).pkg.toString());
+                sb.append(time.calendar2string(time.nowtime()) + "(" + time.getUTC_delta_ms() + ")\n");
                 tv.setText(sb);
                 bt.setEnabled(true);
 
