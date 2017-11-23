@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by student on 2017/10/13.
@@ -26,6 +27,19 @@ public class time {
 
     // ====== 截止時間換算 ======
     public static Calendar string2calendar(String t) {
+        Calendar cal = Calendar.getInstance(); // 取得目前時間
+        try {
+            Date dt = sdf.parse(t);                              //將字串轉成Date型
+            cal.setTime(dt);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return cal;
+    }
+
+    public static Calendar string2calendar(String t, String format, String zone) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        sdf.setTimeZone(TimeZone.getTimeZone(zone));
         Calendar cal = Calendar.getInstance(); // 取得目前時間
         try {
             Date dt = sdf.parse(t);                              //將字串轉成Date型
@@ -70,6 +84,10 @@ public class time {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(stamp);
         return cal;
+    }
+
+    public static long calendar2stamp(Calendar cal) {
+        return cal.getTimeInMillis();
     }
 
 }
